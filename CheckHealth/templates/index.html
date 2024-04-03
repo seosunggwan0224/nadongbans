@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Data</title>
+</head>
+<body>
+    <h1>Health Data</h1>
+    <button onclick="startApp()">음성 입력 시작</button>
+    <div id="result"></div>
+
+    <script>
+        // 음성 입력을 시작하고 서버 실행하는 함수
+        function startApp() {
+            fetch('/process_voice_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: '음성 입력 시작' })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Server response:', data);
+                showTable(data);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // 결과를 표 형태로 화면에 표시하는 함수
+        function showTable(data) {
+            var table = "<table border='1'><tr><th>Date</th><th>Alcohol</th><th>Outside</th><th>Exercise</th></tr>";
+            data.forEach(row => {
+                table += "<tr>";
+                table += "<td>" + row[3] + "</td>";
+                table += "<td>" + (row[2] === 1 ? 'O' : 'X') + "</td>";
+                table += "<td>" + (row[1] === 1 ? 'O' : 'X') + "</td>";
+                table += "<td>" + (row[0] === 1 ? 'O' : 'X') + "</td>";
+                table += "</tr>";
+            });
+            table += "</table>";
+            document.getElementById('result').innerHTML = table;
+        }
+    </script>
+</body>
+</html>
